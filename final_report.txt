@@ -1,6 +1,6 @@
 --------------
  Sales Report 
 --------------
-Eletronicos: R$ 4000.00
-Livros: R$ 80.00
-Roupas: R$ 120.00
+{category.title()}: R$ {value:.2f}
+{category.title()}: R$ {value:.2f}
+{category.title()}: R$ {value:.2f}

@@ -6,6 +6,10 @@ import pandas as pd
 
 import json
 
+import logging
+
+from pathlib import Path
+
 class BaseProcessor(ABC):
     """
     Abstract base class for data processors.
@@ -14,11 +18,14 @@ class BaseProcessor(ABC):
         """
         Initializes the processor.
         """
-        self.input_file = input_file
-        self.output_file = output_file
+        self.input_file = Path(input_file)
+        self.output_file = Path(output_file)
+        
+        if self.input_file.resolve() == self.output_file.resolve():
+            raise ValueError("Input and output files cannot be the same")
+        
         self.data = []
         self.processed_data = {}
-        pass
 
     @abstractmethod 
     def read_data(self):
@@ -63,7 +70,7 @@ class TxtProcessor(BaseProcessor):
                 for l in f:
                     self.data.append(l)
         except FileNotFoundError:
-            print(f'The file {self.input_file} was not found.')
+            logging.error(f'The file {self.input_file} was not found.')
             return []
                 
     def process_data(self) -> None:
@@ -109,7 +116,7 @@ class CsvProcessor(BaseProcessor):
                 for l in reader:
                     self.data.append(l)
         except FileNotFoundError:
-            print(f'The file {self.input_file} was not found.')
+            logging.error(f'The file {self.input_file} was not found.')
             return []
             
         
@@ -132,7 +139,7 @@ class CsvProcessor(BaseProcessor):
                 else:
                     totals[category] = value
             except ValueError:
-                print(f'Invalid error for {item}')
+                logging.warning(f'Invalid error for {item}')
         self.processed_data = totals
         
     def save_data(self) -> None:
@@ -147,7 +154,7 @@ class CsvProcessor(BaseProcessor):
                 for category, value in self.processed_data.items():
                     f.write(f'{category.title()}: R$ {value:.2f}\n')
         except PermissionError:
-                print("Permission Error")
+                logging.error("Permission Error")
 
 class ExcelProcessor(BaseProcessor):
     """
@@ -166,7 +173,7 @@ class ExcelProcessor(BaseProcessor):
         try:
             self.data = pd.read_excel(self.input_file)
         except FileNotFoundError:
-                print(f'The file {self.input_file} was not found.')
+                logging.error(f'The file {self.input_file} was not found.')
                 return []
             
     def process_data(self) -> None:
@@ -204,9 +211,10 @@ class JsonProcessor(BaseProcessor):
             with open(self.input_file, "r", encoding="utf8") as f:
                 self.data = json.load(f)
         except FileNotFoundError:
-            print(f'The file {self.input_file} was not found')
+            logging.error(f'The file {self.input_file} was not found')
         except json.JSONDecodeError:
-            print(f'The file {self.input_file} is not a valid JSON file.')
+            logging.error(f'The file {self.input_file} is not a valid JSON file.')
+            self.data = []
             
     def process_data(self) -> None:
         """
@@ -214,7 +222,7 @@ class JsonProcessor(BaseProcessor):
         """
         for item in self.data:
             item['status'] = "processed"
-            self.processed_data = self.data 
+        self.processed_data = self.data 
             
     def save_data(self) -> None:
         """

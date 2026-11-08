@@ -1,0 +1,10 @@
+2026-11-08 17:02:51,212 -INFO - Starting the processing
+2026-11-08 17:02:51,256 -INFO - Excel processing complete
+2026-11-08 17:14:51,489 -INFO - Starting the processing
+2026-11-08 17:14:51,546 -INFO - Excel processing complete
+2026-11-08 17:48:59,129 - INFO - txt processing complete
+2026-11-08 17:48:59,133 - INFO - Csv processing complete
+2026-11-08 17:48:59,719 - INFO - Starting the processing
+2026-11-08 17:48:59,778 - INFO - Excel processing complete
+2026-11-08 17:48:59,781 - INFO - Json processing complete
+2026-11-08 17:50:15,480 - ERROR - Successfully caught error Input and output files cannot be the same
