@@ -9,6 +9,7 @@ class BaseProcessor(ABC):
         self.input_file = input_file
         self.output_file = output_file
         self.data = []
+        self.processed_data = {}
         pass
 
     @abstractmethod 
@@ -36,10 +37,18 @@ class TxtProcessor(BaseProcessor):
             return []
                 
     def process_data(self):
-            pass
+        clean_data = []
+        for l in self.data:
+            clean_line = l.strip().upper()
+            if clean_line:
+                clean_data.append(clean_line)
+        self.data = clean_data
+            
 
     def save_data(self):
-            pass
+        with open(self.output_file, "w", encoding="utf8") as f:
+            for item in self.data:
+                f.write(item + "\n")
 
 class CsvProcessor(BaseProcessor):
     def __init__(self, input_file: str, output_file: str):
@@ -57,10 +66,29 @@ class CsvProcessor(BaseProcessor):
             
         
     def process_data(self):
-        pass
+        totals = {}
+        for item in self.data:
+            category = item["category"]
+            try:
+                value = float(item["value"])
+                if category in totals:
+                    totals[category] = totals[category] + value
+                else:
+                    totals[category] = value
+            except ValueError:
+                print(f'Invalid error for {item}')
+        self.processed_data = totals
         
     def save_data(self):
-        pass
+        try:
+            with open(self.output_file, "w", encoding="utf8") as f:    
+                f.write("--------------\n")
+                f.write(" Sales Report \n")
+                f.write("--------------\n")
+                for category, value in self.processed_data.items():
+                    f.write(f'{category.title()}: R$ {value:.2f}\n')
+        except PermissionError:
+                print("Permission Error")
 
 class ExcelProcessor(BaseProcessor):
     def __init__(self, input_file: str, output_file: str):
