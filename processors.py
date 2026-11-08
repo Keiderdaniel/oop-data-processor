@@ -173,13 +173,13 @@ class ExcelProcessor(BaseProcessor):
         """
         Processes The EXCEL data by ...
         """
-        pass
+        self.processed_data = self.data
             
     def save_data(self) -> None:
         """
         Saves the processed data to the output EXCEL file.
         """
-        pass
+        self.processed_data.to_excel(self.output_file, index=False)
         
 class JsonProcessor(BaseProcessor):
     """
@@ -212,10 +212,13 @@ class JsonProcessor(BaseProcessor):
         """
         Processes the JSON data by adding a "status" key to each dictionary.
         """
-        pass
-    
+        for item in self.data:
+            item['status'] = "processed"
+            self.processed_data = self.data 
+            
     def save_data(self) -> None:
         """
         Saves the processed data to the output JSON file.
         """
-        pass
+        with open(self.output_file, "w", encoding="utf-8") as f:
+            json.dump(self.processed_data, f, indent=4)

@@ -1,0 +1,5 @@
+[
+    {"id": 1, "category": "electronics", "value": 1500.00},
+    {"id": 2, "category": "books", "value": 50.00},
+    {"id": 3, "category": "clothing", "value": 120.00}
+]
