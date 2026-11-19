@@ -1,0 +1,34 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environments
+
+.venv/
+venv/
+env/
+
+# Generated data and logs
+__output_data__/
+__logs__/
+*.log
+*.xlsx
+*.csv
+*.json
+*.txt
+
+# Keep the sample files and test fixtures
+!requirements.txt
+!samples/*.txt
+!samples/*.csv
+!tests/fixtures/*.txt
+!tests/fixtures/*.csv
+!tests/fixtures/*.json
+
+# IDE and OS files
+
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

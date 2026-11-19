@@ -1,6 +1,0 @@
---------------
- Sales Report 
---------------
-{category.title()}: R$ {value:.2f}
-{category.title()}: R$ {value:.2f}
-{category.title()}: R$ {value:.2f}

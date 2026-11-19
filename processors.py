@@ -230,3 +230,4 @@ class JsonProcessor(BaseProcessor):
         """
         with open(self.output_file, "w", encoding="utf-8") as f:
             json.dump(self.processed_data, f, indent=4)
+            
