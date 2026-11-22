@@ -93,8 +93,9 @@ class TxtProcessor(BaseProcessor):
             with open(self.output_file, "w", encoding="utf8") as f:
                 for item in self.data:
                     f.write(item + "\n")
-        except PermissionError:
+        except PermissionError as e:
             logging.error('Permission Error')
+            raise PermissionError('Permission denied when saving to {self.output_file}') from e
 
 class CsvProcessor(BaseProcessor):
     """
