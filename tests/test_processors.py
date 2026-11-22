@@ -6,7 +6,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from processors import TxtProcessor, CsvProcessor
 
-def test_txt_processor_cleans_data(tmp_path):
+def test_txt_processor_cleans_data(tmp_path: Path) -> None:
+    """Test that TXT processor strips whitespaces, removes empty lines and 
+    converts to uppercase."""
+    
     output_file = tmp_path / "output.txt"
     
     processor = TxtProcessor(
@@ -25,16 +28,24 @@ def test_txt_processor_cleans_data(tmp_path):
     
     assert clean_lines == ['HELLO WORLD', 'PYTHON IS GREAT']
     
-def test_txt_processor_missing_file():
+def test_txt_processor_missing_file() -> None:
+    """Test that TXT processor raises FileNotFoundError when the input file
+    does not exist."""
     processor = TxtProcessor('non_existent_file.txt', 'output.txt')
     with pytest.raises(FileNotFoundError):
         processor.read_data()
     
-def test_input_equals_output_raises_error():
+def test_input_equals_output_raises_error() -> None:
+    """Test that BaseProcessors raises ValueError if input and output paths
+    are identical."""
+    
     with pytest.raises(ValueError, match="Input and output files cannot be the same"):
         TxtProcessor('same.txt', 'same.txt')
         
-def test_csv_processor_cleans_data(tmp_path):
+def test_csv_processor_cleans_data(tmp_path: Path) -> None:
+    """Test that CSV processor correctly groups categories and calculates
+    totals"""
+    
     output_file = tmp_path / "output.csv"
     processor = CsvProcessor(
         input_file = "tests/fixtures/sample.csv",
