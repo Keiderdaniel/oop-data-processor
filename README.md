@@ -1,4 +1,4 @@
-# file processor
+# File processor
 
 A python CLI tool that reads, cleans, and consolidates data from TXT, CSV, Excel and JSON files to automate file organization.
 
