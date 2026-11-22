@@ -1,8 +1,7 @@
 
 from processors import TxtProcessor, CsvProcessor, ExcelProcessor, JsonProcessor
-
 import pandas as pd
-
+import argparse
 import logging
 
 logging.basicConfig(
@@ -11,54 +10,41 @@ logging.basicConfig(
     filename='processor.log'
 )
 
-if __name__ == "__main__" :
+def main():
+    parser = argparse.ArgumentParser(description="File Processor CLI")
     
-    #TXT
-        
-    processor = TxtProcessor("Dirty.txt", "clean.txt")
-    processor.read_data()
-    processor.process_data()
-    processor.save_data()
-    logging.info("txt processing complete") 
-        
-    #CSV
-        
-    processor = CsvProcessor("sales_report.csv", "final_report.txt")
-    processor.read_data()
-    processor.process_data()
-    processor.save_data()
-    logging.info("Csv processing complete")
+    parser.add_argument(
+        "--type",
+        choices=["txt", "csv", "excel", "json"],
+        required=True,
+        help="Type of file to process"
+    )
+    parser.add_argument("--input", required=True, help="Path to the input file")
+    parser.add_argument("--output", required=True, help='Path to the output file')
     
-    #EXCEL
-            
-    random_data = {
-        "id": [1,2,3],
-        "category": ["electronics", "books", "clothing"],
-        "value": [1500, 50, 120]
-        }
-            
-    df =pd.DataFrame(random_data)
-    df.to_excel("input_data.xlsx", index=False)
-    logging.info("Starting the processing")
-            
-            
-    processor = ExcelProcessor("input_data.xlsx", "output_file.xlsx")
-    processor.read_data()
-    processor.process_data()
-    processor.save_data()
-    logging.info("Excel processing complete")
-            
-    #JSON
-           
-    processor = JsonProcessor("data.json", "clean.json")
-    processor.read_data()
-    processor.process_data()
-    processor.save_data()
-    logging.info("Json processing complete")
+    args = parser.parse_args()
+    
+    processors = {
+        "txt": TxtProcessor,
+        "csv": CsvProcessor,
+        "excel": ExcelProcessor,
+        "json": JsonProcessor
+    }
+    
+    ProcessorClass = processors[args.type]
     
     try:
-        bad_processor = TxtProcessor("dirty.txt", "dirty.txt")
-    except ValueError as e:
-        logging.error(f'Successfully caught error {e}')
+        processor = ProcessorClass(input_file=args.input, output_file=args.output)
+        processor.read_data()
+        processor.process_data()
+        processor.save_data()
+        logging.info(f'{args.type.upper()} processing complete')
         
-    
+        print(f'Successfully processed! {args.input} -> {args.output}')
+    except Exception as e:
+        logging.error(f'Failed to process {args.type.upper()} file: {e}')
+        
+        print(f'Error: {e}')
+
+if __name__ == "__main__":
+    main()
