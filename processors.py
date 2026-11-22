@@ -71,7 +71,7 @@ class TxtProcessor(BaseProcessor):
                     self.data.append(l)
         except FileNotFoundError:
             logging.error(f'The file {self.input_file} was not found.')
-            return []
+            raise FileNotFoundError(f'The input file was not found: {self.input_file}')
                 
     def process_data(self) -> None:
         """
@@ -89,9 +89,12 @@ class TxtProcessor(BaseProcessor):
         """
         Saves the processed data to the output TXT file.
         """
-        with open(self.output_file, "w", encoding="utf8") as f:
-            for item in self.data:
-                f.write(item + "\n")
+        try:
+            with open(self.output_file, "w", encoding="utf8") as f:
+                for item in self.data:
+                    f.write(item + "\n")
+        except PermissionError:
+            logging.error('Permission Error')
 
 class CsvProcessor(BaseProcessor):
     """
@@ -117,7 +120,7 @@ class CsvProcessor(BaseProcessor):
                     self.data.append(l)
         except FileNotFoundError:
             logging.error(f'The file {self.input_file} was not found.')
-            return []
+            raise FileNotFoundError(f'The input file was not found: {self.input_file}')
             
         
     def process_data(self) -> None:
@@ -131,15 +134,19 @@ class CsvProcessor(BaseProcessor):
         """
         totals = {}
         for item in self.data:
-            category = item["category"]
             try:
+                category = item["category"]
                 value = float(item["value"])
                 if category in totals:
                     totals[category] = totals[category] + value
                 else:
                     totals[category] = value
+            except KeyError as e:
+                logging.warning(f'Missing required column in CSV: {e}')
+                raise KeyError(f'Invalid error for {e}')
             except ValueError:
-                logging.warning(f'Invalid error for {item}')
+                logging.warning(f'Invalid value found for item {item}')
+                continue
         self.processed_data = totals
         
     def save_data(self) -> None:
@@ -173,9 +180,12 @@ class ExcelProcessor(BaseProcessor):
         try:
             self.data = pd.read_excel(self.input_file)
         except FileNotFoundError:
-                logging.error(f'The file {self.input_file} was not found.')
-                return []
-            
+            logging.error(f'The file {self.input_file} was not found.')
+            raise FileNotFoundError(f'The input file was not found: {self.input_file}')
+        except ValueError as e:
+            logging.error(f'Invalid Excel format: {e}')
+            raise ValueError(f'The file is not a valid xlsx file: {self.input_file}')
+ 
     def process_data(self) -> None:
         """
         Processes The EXCEL data by ...
@@ -212,17 +222,21 @@ class JsonProcessor(BaseProcessor):
                 self.data = json.load(f)
         except FileNotFoundError:
             logging.error(f'The file {self.input_file} was not found')
+            raise FileNotFoundError(f'The file was not found: {self.input_file}')
         except json.JSONDecodeError:
             logging.error(f'The file {self.input_file} is not a valid JSON file.')
-            self.data = []
+            raise ValueError(f'Invalid JSON format in file: {self.input_file}')
             
     def process_data(self) -> None:
         """
         Processes the JSON data by adding a "status" key to each dictionary.
         """
-        for item in self.data:
-            item['status'] = "processed"
-        self.processed_data = self.data 
+        try:
+            for item in self.data:
+                item['status'] = "processed"
+            self.processed_data = self.data 
+        except TypeError:
+            raise ValueError('The JSON file is not a list of dictionaries')
             
     def save_data(self) -> None:
         """

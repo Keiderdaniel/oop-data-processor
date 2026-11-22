@@ -22,6 +22,8 @@ __logs__/
 !requirements.txt
 !samples/*.txt
 !samples/*.csv
+!samples/*.xlsx
+!samples/*.json
 !tests/fixtures/*.txt
 !tests/fixtures/*.csv
 !tests/fixtures/*.json
