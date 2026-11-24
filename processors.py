@@ -26,6 +26,10 @@ class BaseProcessor(ABC):
         
         self.data = []
         self.processed_data = {}
+        
+    def _ensure_output_dir(self) -> None:
+        """Ensures the output directory exists before saving"""
+        self.output_file.parent.mkdir(parents=True, exist_ok=True)
 
     @abstractmethod 
     def read_data(self):
@@ -89,13 +93,15 @@ class TxtProcessor(BaseProcessor):
         """
         Saves the processed data to the output TXT file.
         """
+        self._ensure_output_dir()
+        
         try:
             with open(self.output_file, "w", encoding="utf8") as f:
                 for item in self.data:
                     f.write(item + "\n")
-        except PermissionError as e:
-            logging.error('Permission Error')
-            raise PermissionError('Permission denied when saving to {self.output_file}') from e
+        except PermissionError:
+            logging.exception(f'Permission denied when saving to {self.output_file}')
+            raise 
 
 class CsvProcessor(BaseProcessor):
     """
@@ -154,6 +160,8 @@ class CsvProcessor(BaseProcessor):
         """
         Saves the processed data to the output CSV file.
         """
+        self._ensure_output_dir()
+        
         try:
             with open(self.output_file, "w", encoding="utf8") as f:    
                 f.write("--------------\n")
@@ -162,7 +170,8 @@ class CsvProcessor(BaseProcessor):
                 for category, value in self.processed_data.items():
                     f.write(f'{category.title()}: R$ {value:.2f}\n')
         except PermissionError:
-                logging.error("Permission Error")
+                logging.exception(f'Permission denied when saving to {self.output_file}')
+                raise
 
 class ExcelProcessor(BaseProcessor):
     """
@@ -197,6 +206,7 @@ class ExcelProcessor(BaseProcessor):
         """
         Saves the processed data to the output EXCEL file.
         """
+        self._ensure_output_dir()
         self.processed_data.to_excel(self.output_file, index=False)
         
 class JsonProcessor(BaseProcessor):
@@ -243,6 +253,8 @@ class JsonProcessor(BaseProcessor):
         """
         Saves the processed data to the output JSON file.
         """
+        self._ensure_output_dir()
+        
         with open(self.output_file, "w", encoding="utf-8") as f:
             json.dump(self.processed_data, f, indent=4)
             
