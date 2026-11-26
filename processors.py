@@ -56,12 +56,6 @@ class TxtProcessor(BaseProcessor):
     """
     Processor for TXT files.
     """
-    def __init__(self, input_file: str, output_file: str):
-        """
-        Initializes the TXT processor.
-        """
-        super().__init__(input_file, output_file)
-
     def read_data(self) -> None:
         """
         Reads data from the TXT file and stores it in self.data.
@@ -107,12 +101,6 @@ class CsvProcessor(BaseProcessor):
     """
     Processor for CSV files.
     """
-    def __init__(self, input_file: str, output_file: str):
-        """
-        Initializes the CSV processor.
-        """
-        super().__init__(input_file, output_file)
-
     def read_data(self) -> None:
         """
         Reads data from the input file and stores it in self.data.
@@ -176,12 +164,6 @@ class ExcelProcessor(BaseProcessor):
     """
     Processor for Excel files.
     """
-    def __init__(self, input_file: str, output_file: str):
-        """
-        Initializes the EXCEL processor. 
-        """
-        super().__init__(input_file, output_file)
-    
     def read_data(self) -> None:
         """
         Reads data from the input EXCEL file and stores it in self.data
@@ -212,13 +194,6 @@ class JsonProcessor(BaseProcessor):
     """
     Processor for JSON files.
     """
-    
-    def __init__(self, input_file: str, output_file: str) -> None:
-        """
-        Initializes the JSON processor.
-        """
-        super().__init__(input_file, output_file)
-        
     def read_data(self) -> None:
         """
         Reads data form the input JSON file and stores it in self.data
