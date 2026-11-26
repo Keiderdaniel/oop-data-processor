@@ -217,9 +217,18 @@ class JsonProcessor(BaseProcessor):
         Processes the JSON data by adding a "status" key to each dictionary.
         """
         try:
+            cleaned_data = []
             for item in self.data:
-                item['status'] = "processed"
-            self.processed_data = self.data 
+                if not isinstance(item, dict) or "id" not in item:
+                    continue
+                new_item = {
+                    "id": item['id'],
+                    "category": item.get("category", "unknown")
+                }
+                cleaned_data.append(new_item)
+                
+            self.processed_data = cleaned_data
+            
         except TypeError:
             raise ValueError('The JSON file is not a list of dictionaries')
             
