@@ -61,9 +61,7 @@ def test_csv_processor_cleans_data(tmp_path: Path) -> None:
         
     clean_lines = [line.strip() for line in saved_lines]
     assert clean_lines == [
-        '--------------', 
-        'Sales Report', 
-        '--------------', 
-        'Electronics: R$ 150.50',
-        'Books: R$ 20.00',
+        'category,total_value',
+        'Electronics,150.50',
+        'Books,20.00'
         ]

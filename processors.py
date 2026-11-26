@@ -163,12 +163,11 @@ class CsvProcessor(BaseProcessor):
         self._ensure_output_dir()
         
         try:
-            with open(self.output_file, "w", encoding="utf8") as f:    
-                f.write("--------------\n")
-                f.write(" Sales Report \n")
-                f.write("--------------\n")
+            with open(self.output_file, "w", encoding="utf8", newline="") as f:    
+                writer = csv.writer(f)
+                writer.writerow(["category", "total_value"])
                 for category, value in self.processed_data.items():
-                    f.write(f'{category.title()}: R$ {value:.2f}\n')
+                    writer.writerow([category.title(), f"{value:.2f}"])
         except PermissionError:
                 logging.exception(f'Permission denied when saving to {self.output_file}')
                 raise

@@ -38,7 +38,7 @@ A Python Command Line Interface (CLI) tool that reads, cleans, and consolidates 
    python main.py --type txt --input samples/dirty.txt --output output_data/clean.txt
 
    # Example: Process a CSV file
-   python main.py --type csv --input samples/sales_report.csv --output output_data/report.txt
+   python main.py --type csv --input samples/sales_report.csv --output output_data/report.csv
    ```
 
 4. **Check the help menu:**
