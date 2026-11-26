@@ -179,9 +179,9 @@ class ExcelProcessor(BaseProcessor):
  
     def process_data(self) -> None:
         """
-        Processes The EXCEL data by ...
+        Processes The EXCEL data by grouping by "category" and summing "value"
         """
-        self.processed_data = self.data
+        self.processed_data = self.data.groupby("category")["value"].sum().reset_index()
             
     def save_data(self) -> None:
         """
